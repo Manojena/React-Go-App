@@ -37,7 +37,7 @@ jobs:
                       cat React-Go-App/frontend/.env
                       cd React-Go-App
                       docker-compose up --build -d
-                      echo 'Deployment completed'
+                      echo 'Deployment completed 2'
             
         
             
