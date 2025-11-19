@@ -1,0 +1,48 @@
+version: '3'
+services:
+  db:
+    image: postgres:15
+    container_name: postgres-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: employee_db
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ./backend
+    container_name: go-backend
+    environment:
+      DB_HOST: db                # connect to Postgres container
+      DB_USER: postgres
+      DB_PASSWORD: password
+      DB_NAME: employee_db
+      DB_PORT: 5432
+      ALLOWED_ORIGINS: http://${ip}:3000  # React local app
+    depends_on:
+      - db
+    ports:
+      - "8080:8080"
+    command: ["/app/wait-for-it.sh", "db:5432", "--", "/app/employee-management-system"]
+
+  frontend:
+    build: ./frontend
+    container_name: react-frontend
+    ports:
+      - "3000:80"
+    environment:
+       values: ${prashant}
+      # Frontend should call backend locally
+      #REACT_APP_API_URL: http://${ip}:8080
+      # REACT_APP_SERVER_URL: http://${ip}:8080/employees
+
+volumes:
+  db-data:
