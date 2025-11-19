@@ -21,7 +21,7 @@ jobs:
                   username: ubuntu
                   key: ${{ secrets.EC2_PRIVATE_KEY }}
                   script: |-
-                      ip=13.204.158.53
+                      export ip=13.204.158.53
                       echo "Setting IP variable: $ip"
                       if [ ! -d "React-Go-App" ]; then
                         echo "📦 Cloning repository for the first time..."
